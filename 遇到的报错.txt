@@ -1,0 +1,48 @@
+1.Command 'autoreconf' not found, but can be installed with:
+sudo apt install autoconf
+
+解决方案：
+要换阿里云镜像
+https://blog.csdn.net/weixin_47156401/article/details/121093769
+
+
+
+2.以下报错的原因及解决方案：
+autoreconf: Entering directory `.'
+autoreconf: configure.ac: not using Gettext
+autoreconf: running: aclocal --force ${ACLOCAL_FLAGS} -I m4
+autom4te: cannot create autom4te.cache: No such file or directory
+aclocal: error: echo failed with exit status: 1
+autoreconf: aclocal failed with exit status: 1
+
+###解决方案
+这个错误是由于缺少 autom4te.cache 目录导致的。autom4te 是 autoconf 工具的一部分，用于生成 configure 脚本。解决方案是创建 autom4te.cache 目录并赋予适当的权限。
+
+您可以按照以下步骤解决该问题：
+
+在命令行中定位到您的项目目录。
+
+运行以下命令来创建 autom4te.cache 目录：
+
+Copy
+mkdir autom4te.cache
+```
+
+授予 autom4te.cache 目录适当的权限，以确保 autoconf 工具可以使用它：
+
+Copy
+chmod -R 755 autom4te.cache
+```
+完成上述步骤后，您应该能够重新运行 autoreconf 命令而不再遇到相同的错误。
+√
+
+
+
+
+报错：
+E: Release file for http://mirrors.aliyun.com/ubuntu/dists/focal-security/InRelease is not valid yet (invalid for another 3h 36min 32s). Updates for this repository will not be applied.
+E: Release file for http://mirrors.aliyun.com/ubuntu/dists/focal-updates/InRelease is not valid yet (invalid for another 5h 20min 51s). Updates for this repository will not be applied.
+E: Release file for http://mirrors.aliyun.com/ubuntu/dists/focal-proposed/InRelease is not valid yet (invalid for another 5h 22min 36s). Updates for this repository will not be applied.
+E: Release file for http://mirrors.aliyun.com/ubuntu/dists/focal-backports/InRelease is not valid yet (invalid for another 3h 40min 18s). Updates for this repository will not be applied.
+方法：
+换源
