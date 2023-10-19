@@ -1,0 +1,139 @@
+#########1###########
+wget --continue www.coin-or.org/download/source/ADOL-C/ADOL-C-2.6.3.tgz
+tar zxvf ADOL-C-2.6.3.tgz
+cd ADOL-C-2.6.3
+mkdir ./ThirdParty
+cd ./ThirdParty
+wget --continue http://archive.ubuntu.com/ubuntu/pool/universe/c/colpack/colpack_1.0.10.orig.tar.gz
+tar zxvf colpack_1.0.10.orig.tar.gz
+mv ColPack-1.0.10 ColPack
+cd ColPack
+./configure --prefix=/usr/local
+make
+sudo make install
+cd $HOME/ADOL-C-2.6.3
+./configure --prefix=/usr/local --enable-sparse --with-colpack=/usr/local
+make
+sudo make install
+
+
+
+
+#############eigen3#################
+wget --continue https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.gz
+tar zxvf eigen-3.3.7.tar.gz
+cd eigen-3.3.7
+mkdir build
+cd build
+cmake ..
+sudo make install
+
+
+
+
+#################gnuplot##############
+wget --continue https://fossies.org/linux/misc/old/PDFlib-Lite-7.0.5p3.tar.gz
+tar zxvf PDFlib-Lite-7.0.5p3.tar.gz
+cd PDFlib-Lite-7.0.5p3
+./configure
+make; sudo make install
+sudo ldconfig
+cd $HOME/Downloads
+wget --continue https://sourceforge.net/projects/gnuplot/files/gnuplot/4.4.0/gnuplot-4.4.0.tar.gz/download
+mv download gnuplot-4.4.0.tar.gz
+tar zxvf gnuplot-4.4.0.tar.gz
+sudo apt-get -y install libx11-dev libxt-dev libreadline6-dev libgd-dev
+cd gnuplot-4.4.0
+./configure -with-readline=gnu -without-tutorial
+make;sudo make install
+
+
+prefix=/usr/local
+#prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/coin-or
+Name: IPOPT
+Description: Interior Point Optimizer
+URL: https://github.com/coin-or/Ipopt
+Version: 3.13.2
+Cflags: -I${includedir}
+Libs: -L${libdir} -lipopt
+Requires.private: coinhsl coinmumps
+
+
+
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/ColPack
+Name: ColPack
+Version: 1.0.10
+Description: Graph Coloring Library
+Requires:
+Libs: -L${libdir} -lColPack -Wl,-rpath,${libdir}
+-L/usr/local/lib -Wl,-rpath,/usr/local/lib
+Cflags: -I${includedir}
+
+
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+Name: adolc
+Version: 2.6.3
+Description: Algorithmic Differentiation Library for C/C++
+Requires:
+Libs: -L${libdir} -ladolc -Wl,-rpath,${libdir}
+-L/usr/local/lib -lColPack -Wl,-rpath,/usr/local/lib
+Cflags: -I${includedir}
+
+
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+Name: Eigen3
+Version: 3.3.77
+Description: Numerical linear algebra library for C++
+Requires:
+Libs: -Wl,-rpath,${libdir} -L/usr/local/lib
+Cflags: -I${includedir} -std=c++11
+
+
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/snopt7
+Name: SNOPT7
+Version: 7
+Description: SNOPT NONLINEAR PROGRAMMING LIBRARY
+Requires:
+Libs: -L${libdir} -lsnopt7_cpp -Wl,-rpath,${libdir}
+-L/usr/local/lib -Wl,-rpath,/usr/local/lib
+Cflags: -I${includedir}
+
+
+
+
+sudo apt-get install git
+sudo apt-get install cmake
+sudo apt-get install gfortran
+sudo apt-get install g++
+sudo apt-get install libboost-dev
+sudo apt-get install libboost-system-dev
+sudo apt-get install coinor-libipopt-dev
+sudo apt-get install libcolpack-dev
+sudo apt-get install libadolc-dev
+sudo apt-get install gnuplot
+sudo apt-get install libeigen3-dev
+sudo apt-get install libblas-dev
+sudo apt-get install liblapack-dev
+
+
+
+git clone https://github.com/PSOPT/psopt.git
+cd psopt; mkdir build; cd build
+cmake -DBUILD_EXAMPLES=ON ..
+make
+sudo make install
