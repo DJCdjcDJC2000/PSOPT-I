@@ -1,4 +1,11 @@
-#########1###########
+##############IPOPT###############
+https://zhuanlan.zhihu.com/p/563591167
+sudo apt-get install gcc g++ gfortran git patch wget pkg-config liblapack-dev libmetis-dev
+	############ASL###########
+don't need
+	############HSL###########
+	https://github.com/coin-or-tools/ThirdParty-HSL
+#########1___ADOL-C____###########
 wget --continue www.coin-or.org/download/source/ADOL-C/ADOL-C-2.6.3.tgz
 tar zxvf ADOL-C-2.6.3.tgz
 cd ADOL-C-2.6.3
@@ -8,11 +15,12 @@ wget --continue http://archive.ubuntu.com/ubuntu/pool/universe/c/colpack/colpack
 tar zxvf colpack_1.0.10.orig.tar.gz
 mv ColPack-1.0.10 ColPack
 cd ColPack
+autoreconf -vif
 ./configure --prefix=/usr/local
-make
+make -j 4   #Where "4" is the number of cores on your machine
 sudo make install
 cd $HOME/ADOL-C-2.6.3
-./configure --prefix=/usr/local --enable-sparse --with-colpack=/usr/local
+sudo ./configure --prefix=/usr/local --enable-sparse --with-colpack=/usr/local
 make
 sudo make install
 
@@ -29,25 +37,29 @@ cmake ..
 sudo make install
 
 
-
+#################SNOPT################
 
 #################gnuplot##############
 wget --continue https://fossies.org/linux/misc/old/PDFlib-Lite-7.0.5p3.tar.gz
 tar zxvf PDFlib-Lite-7.0.5p3.tar.gz
 cd PDFlib-Lite-7.0.5p3
 ./configure
-make; sudo make install
+make
+sudo make install
 sudo ldconfig
-cd $HOME/Downloads
+cd ../..    #desktop
 wget --continue https://sourceforge.net/projects/gnuplot/files/gnuplot/4.4.0/gnuplot-4.4.0.tar.gz/download
 mv download gnuplot-4.4.0.tar.gz
 tar zxvf gnuplot-4.4.0.tar.gz
 sudo apt-get -y install libx11-dev libxt-dev libreadline6-dev libgd-dev
 cd gnuplot-4.4.0
 ./configure -with-readline=gnu -without-tutorial
-make;sudo make install
+make
+sudo make install
 
 
+cd /usr/local/lib/pkgconfig
+############ipopt.pc#########
 prefix=/usr/local
 #prefix=${pcfiledir}/../..
 exec_prefix=${prefix}
@@ -62,7 +74,7 @@ Libs: -L${libdir} -lipopt
 Requires.private: coinhsl coinmumps
 
 
-
+#############ColPack.pc##############
 prefix=/usr/local
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
@@ -75,7 +87,7 @@ Libs: -L${libdir} -lColPack -Wl,-rpath,${libdir}
 -L/usr/local/lib -Wl,-rpath,/usr/local/lib
 Cflags: -I${includedir}
 
-
+###############adolc.pc##############
 prefix=/usr/local
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
@@ -88,7 +100,7 @@ Libs: -L${libdir} -ladolc -Wl,-rpath,${libdir}
 -L/usr/local/lib -lColPack -Wl,-rpath,/usr/local/lib
 Cflags: -I${includedir}
 
-
+###############eigen3.pc################
 prefix=/usr/local
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
@@ -100,7 +112,7 @@ Requires:
 Libs: -Wl,-rpath,${libdir} -L/usr/local/lib
 Cflags: -I${includedir} -std=c++11
 
-
+##############snopt7.pc###############
 prefix=/usr/local
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
@@ -137,3 +149,60 @@ cd psopt; mkdir build; cd build
 cmake -DBUILD_EXAMPLES=ON ..
 make
 sudo make install
+
+
+
+  adouble operator + (const double v, const adouble& a);
+  
+  
+  上述内容是一个安装文档中的配置示例，它用于定义ADOL-C库的安装位置和相关信息。让我们逐行解释每一行的含义：
+
+1. `prefix=/usr/local`：定义ADOL-C库的安装根目录。在这个示例中，默认将ADOL-C安装在 `/usr/local` 目录下。
+
+2. `exec_prefix=${prefix}`：定义 `exec_prefix` 变量，它表示可执行文件存放的目录。在这个示例中，它与 `prefix` 相同。
+
+3. `libdir=${exec_prefix}/lib`：定义 `libdir` 变量，它表示库文件存放的目录。在这个示例中，库文件将存放在 `${exec_prefix}/lib` 目录下。
+
+4. `includedir=${prefix}/include`：定义 `includedir` 变量，它表示头文件存放的目录。在这个示例中，头文件将存放在 `${prefix}/include` 目录下。
+
+5. `Name: adolc`：定义ADOL-C库的名称为 `adolc`。
+
+6. `Version: 2.6.3`：定义ADOL-C库的版本号为 `2.6.3`。
+
+7. `Description: Algorithmic Differentiation Library for C/C++`：提供了关于ADOL-C库的描述信息。
+
+8. `Requires:`：列出了ADOL-C库所依赖的其他库的信息。在这个示例中，由于该行后面没有具体的依赖库列表，表示ADOL-C库没有其他的依赖。
+
+9. `Libs: -L${libdir} -ladolc -Wl,-rpath,${libdir} -L/usr/local/lib -lColPack -Wl,-rpath,/usr/local/lib`：指定链接ADOL-C库时需要的参数。其中：
+   - `-L${libdir}` 表示链接器需要搜索 `${libdir}` 目录下的库文件。
+   - `-ladolc` 表示需要链接 `libadolc.so`（或 `libadolc.a`）库。
+   - `-Wl,-rpath,${libdir}` 表示在运行时动态链接器需要搜索 `${libdir}` 目录下的库文件。
+   - `-L/usr/local/lib -lColPack -Wl,-rpath,/usr/local/lib` 表示链接器还需要搜索 `/usr/local/lib` 目录下的 `libColPack.so`（或 `libColPack.a`）库，并在运行时动态链接器需要搜索该目录。
+
+10. `Cflags: -I${includedir}`：指定编译时需要包含的头文件目录。在这个示例中，编译器会搜索 `${includedir}` 目录下的头文件。
+
+根据你自己的安装位置，可以按照以下步骤修改上述代码：
+
+1. 如果你将ADOL-C安装在其他目录，需要将 `prefix` 和 `exec_prefix` 的值修改为你的安装目录。例如，如果你将ADOL-C安装在 `/path/to/adolc` 目录下，那么你可以将 `prefix` 和 `exec_prefix` 的值修改为 `prefix=/path/to/adolc` 和 `exec_prefix=${prefix}`。
+
+2. 如果你将ADOL-C的库文件存放在其他目录，需要将 `libdir` 的值修改为你的库文件存放目录。例如，如果你将库文件存放在 `/path/to/adolc/lib` 目录下，那么你可以将 `libdir=${exec_prefix}/lib` 修改为 `libdir=/path/to/adolc/lib`。
+
+3. 如果你将ADOL-C的头文件存放在其他目录，需要将 `includedir` 的值修改为你的头文件存放目录。例如，如果你将头文件存放在 `/path/to/adolc/include` 目录下，那么你可以将 `includedir=${prefix}/include` 修改为 `includedir=/path/to/adolc/include`。
+
+记得根据你的实际情况修改以上代码中的路径。
+
+希望能够帮助到你！如果还有其他问题，请随时提问。
+
+
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib64
+includedir=${prefix}/include
+
+Name: adolc
+Version: 2.6.3
+Description: Algorithmic Differentiation Library for C/C++
+Requires:
+Libs: -L${libdir} -ladolc -Wl,-rpath,${libdir}  -L/usr/lib/x86_64-linux-gnu -lboost_system -L/usr/local/lib64 -lColPack -Wl,-rpath,/usr/local/lib64 -lm
+Cflags: -I${includedir}
+~                                   
